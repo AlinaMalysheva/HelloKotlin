@@ -1,45 +1,57 @@
 fun main() {
-    var amount = 20000
-    var cardType = "MasterCard"
-    var remitancePrivAmount = 250
+    val amount = 140_000
+    val cardType = "Maestro"
+    var remitancePrivMonthAmount = 0
+    val remitancePrivDayAmount = 0
 
-    var resultSumm = toPay(cardType, remitancePrivAmount, amount)
-
-    println("На данный момент Вы перевели $remitancePrivAmount. Для перевода $amount c $cardType внесите: ${resultSumm.toInt()} рублей.")
-}
-
-fun toPay(cardType: String, remitancePrivAmount: Int, amount: Int): Int {
-    if ((cardType == "MasterCard" || cardType == "Maestro") && remitancePrivAmount < 301 || cardType == "VKPay") {
-        return amount
+    if (allowToPay(amount,remitancePrivDayAmount, remitancePrivMonthAmount)) {
+        val resultSumm = toPay(cardType, remitancePrivMonthAmount, amount)
+        println("На данный момент Вы перевели $remitancePrivMonthAmount. Для перевода $amount c $cardType внесите: ${resultSumm.toInt()} рублей.")
     } else {
-        return (amount + calcCommission(amount))
+        println("Вы превысили один из лимитов, перевод невозможен. За день c этимпереводом получается ($remitancePrivDayAmount+$amount) - лимит 150_000. " +
+                "За месяц - $remitancePrivMonthAmount. Лимит 600_000 ")
     }
 }
 
-fun calcCommission(amount: Int): Int {
-    val minCommission = 35
-    val percentCommission = 0.0075
-    return (if (amount * percentCommission < minCommission) minCommission else (amount * percentCommission).toInt())
+fun allowToPay(amount: Int, remitancePrivMonthAmount: Int, remitancePrivDayAmount: Int): Boolean {
+    return ( amount+ remitancePrivDayAmount < 150_001 && amount+ remitancePrivMonthAmount < 600_001)
 }
 
-/*В прошлый раз мы рассматривали упрощённый вариант вычисления комиссии. Давайте усложним задачу.
+fun toPay(cardType: String, remitancePrivMonthAmount: Int, amount: Int): Int {
+        return (amount + calcCommission(amount, cardType))
+    }
 
-За MasterCard и Maestro вообще не нужно платить, пока не превысили лимит (замечание от 300 убираем), а для VK Pay всегда бесплатно:
 
+fun calcCommission(amount: Int, cardType: String): Int {
+    val minCommissionMCard = 20
+    val percentCommissionMCard = 0.006
+    val minCommissionVisa = 35
+    val percentCommissionVisa = 0.0075
 
+    if (cardType == "MasterCard") {
+        val amountUnderCommision = amount - 75_000
+        if (amountUnderCommision > 0) {
+            return ((amountUnderCommision * percentCommissionMCard) + minCommissionMCard).toInt()
+        } else{
+            return 0
+        }
+    }
+    if (cardType == "Maestro") {
+        return (if (amount * percentCommissionVisa < minCommissionVisa) minCommissionVisa else (amount * percentCommissionVisa).toInt())
+    } else {
+        return 0
+    }
+}
 
-Напишите алгоритм расчёта в виде функции, передавая в функцию:
+/*
+За переводы с карты Mastercard комиссия не взимается, пока не превышен месячный лимит в 75 000 руб.
+Если лимит превышен, комиссия составит 0,6% + 20 руб.
+За переводы с карты Visa комиссия составит 0,75%, минимальная сумма комиссии 35 руб.
+За переводы с карты Мир комиссия не взимается.
+Кроме того, введём лимиты на суммы перевода за сутки и за месяц. Максимальная сумма перевода с одной карты:
 
-тип карты/счёта (по умолчанию VK Pay);
-сумму предыдущих переводов в этом месяце (по умолчанию 0 рублей);
-сумму совершаемого перевода.
-Итог: у вас должен быть репозиторий на GitHub, в котором будет ваш Gradle-проект.*/
-
-/**
- * Задание 1.
- *  Представим, что за переводы с любых карт комиссия составляет 0.75 %, минимум 35 рублей.
-Что нужно сделать: напишите небольшую программу, в которой в переменной amount хранится сумма перевода в рублях.
-Ваше приложение должно высчитывать комиссию, которую заплатит пользователь при переводе. Комиссия должна быть в рублях.
-Итог: у вас должен быть репозиторий на GitHub, в котором расположен ваш Gradle-проект.
+150 000 руб. в сутки
+600 000 руб. в месяц
+Комиссия в лимитах не учитывается.
  */
 
