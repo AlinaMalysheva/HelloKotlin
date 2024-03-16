@@ -129,7 +129,7 @@ class RemittanceKtTest {
         val amount = 50
         val cardType = "Mir"
         val result = toPay( cardType, amount,)
-        assertEquals(95, result)
+        assertEquals(85, result)
     }
 
 }
