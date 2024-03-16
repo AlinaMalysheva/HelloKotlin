@@ -118,10 +118,10 @@ class RemittanceKtTest {
 
     @Test
     fun toPay() {
-        val amount = 50_000
+        val amount = 40_000
         val cardType = "smth"
         val result = toPay(cardType, amount)
-        assertEquals(50_000, result)
+        assertEquals(40_000, result)
     }
 
     @Test
