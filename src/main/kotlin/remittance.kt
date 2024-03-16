@@ -1,11 +1,11 @@
 fun main() {
-    val amount = 140_000
-    val cardType = "Maestro"
+    val amount = 4800
+    val cardType = "Visa"
     var remitancePrivMonthAmount = 0
     val remitancePrivDayAmount = 0
 
     if (allowToPay(amount,remitancePrivDayAmount, remitancePrivMonthAmount)) {
-        val resultSumm = toPay(cardType, remitancePrivMonthAmount, amount)
+        val resultSumm = toPay(cardType, amount)
         println("На данный момент Вы перевели $remitancePrivMonthAmount. Для перевода $amount c $cardType внесите: ${resultSumm.toInt()} рублей.")
     } else {
         println("Вы превысили один из лимитов, перевод невозможен. За день c этимпереводом получается ($remitancePrivDayAmount+$amount) - лимит 150_000. " +
@@ -17,7 +17,7 @@ fun allowToPay(amount: Int, remitancePrivMonthAmount: Int, remitancePrivDayAmoun
     return ( amount+ remitancePrivDayAmount < 150_001 && amount+ remitancePrivMonthAmount < 600_001)
 }
 
-fun toPay(cardType: String, remitancePrivMonthAmount: Int, amount: Int): Int {
+fun toPay(cardType: String, amount: Int): Int {
         return (amount + calcCommission(amount, cardType))
     }
 
@@ -28,7 +28,7 @@ fun calcCommission(amount: Int, cardType: String): Int {
     val minCommissionVisa = 35
     val percentCommissionVisa = 0.0075
 
-    if (cardType == "MasterCard") {
+    if (cardType == "MasterCard" || cardType == "Maestro" ) {
         val amountUnderCommision = amount - 75_000
         if (amountUnderCommision > 0) {
             return ((amountUnderCommision * percentCommissionMCard) + minCommissionMCard).toInt()
@@ -36,7 +36,7 @@ fun calcCommission(amount: Int, cardType: String): Int {
             return 0
         }
     }
-    if (cardType == "Maestro") {
+    if (cardType == "Visa" || cardType == "Mir" ) {
         return (if (amount * percentCommissionVisa < minCommissionVisa) minCommissionVisa else (amount * percentCommissionVisa).toInt())
     } else {
         return 0
