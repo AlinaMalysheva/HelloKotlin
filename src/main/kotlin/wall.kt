@@ -1,7 +1,20 @@
 data class PostA(
         val id:Int,
         val content: String,
-        val likes: MutableList<LikesA>
+        val likes: MutableList<LikesA>,
+
+        val friends_only: Boolean = false,
+        val is_ads: Boolean = false,
+        val is_favorite: Boolean = false,
+        val is_pin: Boolean =false,
+        val view:Int = 0,
+        val owner_id: Int = id,
+        val comments: MutableList<Comments>
+
+)
+
+data class Comments(
+        val commenter_id: Int
 )
 
 data class LikesA (
@@ -72,10 +85,9 @@ fun main() {
     val likerIdSec = LikesA(userIdSec)
     val likerIdTh = LikesA(userIdTh)
 
-    WallServiceA.add(PostA(123, "the first post",likes = mutableListOf<LikesA> (likerID, likerIdSec)))
-    WallServiceA.add(PostA(1, "the sec post",likes = mutableListOf<LikesA>()))
-    //я посмотрела видео разбор, лектору удавалось добавлять без прописывания всех параметров, а у меня требовало писать лайки. Почему?
-    WallServiceA.add(PostA(1, "the thrd post",likes = mutableListOf<LikesA>()))
+    WallServiceA.add(PostA(123, "the first post",likes = mutableListOf<LikesA> (likerID, likerIdSec), comments = mutableListOf<Comments>()))
+    WallServiceA.add(PostA(1, "the sec post",likes = mutableListOf<LikesA>(), comments = mutableListOf<Comments>()))
+    WallServiceA.add(PostA(1, "the thrd post",likes = mutableListOf<LikesA>(), comments = mutableListOf<Comments>()))
     WallServiceA.showPosts()
     print('\n')
 
@@ -89,11 +101,11 @@ fun main() {
     WallServiceA.showPosts()
     print('\n')
 
-    WallServiceA.update(PostA(id=1, content = "change content", likes = mutableListOf<LikesA>()))
+    WallServiceA.update(PostA(id=1, content = "change content", likes = mutableListOf<LikesA>(), comments = mutableListOf<Comments>()))
     WallServiceA.showPosts()
     print('\n')
 
-    WallServiceA.update(PostA(id=11, content = "change content", likes = mutableListOf<LikesA>()))
+    WallServiceA.update(PostA(id=11, content = "change content", likes = mutableListOf<LikesA>(), comments = mutableListOf<Comments>()))
     WallServiceA.showPosts()
     print('\n')
 
@@ -101,7 +113,7 @@ fun main() {
     print("Почистили стену ")
     WallServiceA.showPosts()
 
-    val testPost = PostA(123, "the first post",likes = mutableListOf<LikesA> ())
+    val testPost = PostA(123, "the first post",likes = mutableListOf<LikesA> (), comments = mutableListOf<Comments>())
     WallServiceA.add(testPost)
     WallServiceA.showPosts()
     print('\n')
