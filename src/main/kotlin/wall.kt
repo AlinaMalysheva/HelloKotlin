@@ -1,15 +1,15 @@
 data class PostA(
-        val id:Int,
-        val content: String,
-        val likes: MutableList<LikesA>,
+        val id:Int=0,
+        val content: String = " ",
+        val likes: MutableList<LikesA> =  mutableListOf<LikesA>(),
 
         val friends_only: Boolean = false,
-        val is_ads: Boolean = false,
-        val is_favorite: Boolean = false,
-        val is_pin: Boolean =false,
+        val isAds: Boolean = false,
+        val isFavorite: Boolean = false,
+        val isPin: Boolean =false,
         val view:Int = 0,
-        val owner_id: Int = id,
-        val comments: MutableList<Comments>
+        val ownerId: Int = id,
+        val comments: MutableList<Comments> = mutableListOf<Comments>()
 
 )
 
