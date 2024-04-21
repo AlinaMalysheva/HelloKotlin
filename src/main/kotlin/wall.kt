@@ -1,3 +1,5 @@
+import java.time.Duration
+
 data class PostA(
         val id:Int=0,
         val content: String = " ",
@@ -9,9 +11,76 @@ data class PostA(
         val isPin: Boolean =false,
         val view:Int = 0,
         val ownerId: Int = id,
-        val comments: MutableList<Comments> = mutableListOf<Comments>()
+        val comments: MutableList<Comments> = mutableListOf<Comments>(),
 
+        val original: PostA? = null,
+        val repostCounter: Int? = null,
+        val attachments: MutableList<Attachment> = mutableListOf<Attachment>()
 )
+interface Attachment {
+        val type: String
+}
+
+data class Audio (
+        val id: Int,
+        val title: String,
+        val duration: Long,
+        val artist: String,
+        val url: String
+        )
+
+data class AttachmentAudio(
+        override var type: String = "audio",
+        var audio: Audio
+): Attachment
+
+data class Video (
+        val id: Int,
+        val title: String,
+        val duration: Long,
+        val url: String
+)
+
+data class AttachmentVideo(
+        override var type: String = "audio",
+        var video: Video
+): Attachment
+
+data class Doc (
+        val id: Int,
+        val title: String,
+        val author: String,
+        val url: String
+)
+
+data class AttachmentDoc(
+        override var type: String = "doc",
+        var audio: Doc
+): Attachment
+
+data class Foto (
+        val id: Int,
+        val title: String,
+        val url: String
+)
+
+data class AttachmentFoto(
+        override var type: String = "foto",
+        var audio: Foto
+): Attachment
+
+data class Link (
+        val id: Int,
+        val title: String,
+        val url: String
+)
+
+data class AttachmentLinc(
+        override var type: String = "link",
+        var audio: Link
+): Attachment
+
+
 
 data class Comments(
         val commenter_id: Int
@@ -118,6 +187,20 @@ fun main() {
     WallServiceA.showPosts()
     print('\n')
 
+    val audioTest = Audio (1, "1st audio", 1564789, "кто-то с кем-то", "www.fdf.dfdf")
+    val videoTest = Video (1, "1st audio", 1564789, "www.fdf.dfdf")
+
+    val audioAttTest = AttachmentAudio(audio= audioTest)
+    val videoAttTest = AttachmentVideo (video = videoTest)
+
+    WallServiceA.add(PostA(123,
+            "the 4th post",
+            likes = mutableListOf<LikesA> (likerID, likerIdSec),
+            comments = mutableListOf<Comments>(),
+            attachments = mutableListOf <Attachment>(audioAttTest,videoAttTest)
+    ))
+    WallServiceA.showPosts()
+    print('\n')
 }
 
 
