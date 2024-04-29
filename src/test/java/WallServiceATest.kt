@@ -2,6 +2,7 @@ import org.junit.Test
 
 import org.junit.Assert.*
 import org.junit.Before
+import java.lang.Exception
 
 class WallServiceATest {
 
@@ -28,5 +29,22 @@ class WallServiceATest {
         WallServiceA.add(PostA(1, "the first post",likes = mutableListOf<LikesA> ()))
         val isUpd = WallServiceA.update((PostA(123, "the sc post",likes = mutableListOf<LikesA> ())))
         assertEquals(false, isUpd)
+    }
+
+    @Test
+    fun createCommentForExistedPost(){
+        val post = PostA(1, "the first post",likes = mutableListOf<LikesA> ())
+        WallServiceA.add(post)
+        val comment = Comment (1,1,1, "test")
+        WallServiceA.createComment(comment.postId, comment)
+        assertEquals("test",post.comments[0].text)
+    }
+
+    @Test (expected = PostNotFoundExeption::class)
+        fun shouldThrow() {
+        val post = PostA(1, "the first post",likes = mutableListOf<LikesA> ())
+        WallServiceA.add(post)
+        val comment = Comment (1,1,123, "test")
+        WallServiceA.createComment(comment.postId, comment)
     }
 }
